@@ -4,6 +4,7 @@ import logging
 from tqdm.asyncio import tqdm_asyncio
 import yaml
 import random
+import click
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,13 +33,11 @@ async def fetch_manifest(client, url):
         return None
 
 
-async def start():
-    config = yaml.safe_load(open('config/config.yml'))
-    random_collection = random.choice(config['collections'])
+async def start(collection):
     async with httpx.AsyncClient(timeout=httpx.Timeout(40)) as client:
         logging.info("Fetching main data from solr instance.")
         try:
-            response = await client.get(random_collection)
+            response = await client.get(collection)
             data = response.json()
         except httpx.RequestError as e:
             logging.error(f"Request error for Solr instance: {e}")
@@ -64,6 +63,30 @@ async def start():
 
 def kickstart():
     asyncio.run(start())
+
+
+@click.group()
+def cli() -> None:
+    pass
+
+
+@cli.command("random")
+def random_collection() -> None:
+    config = yaml.safe_load(open('config/config.yml'))
+    random_collection = random.choice(config['collections'])
+    asyncio.run(start(random_collection))
+
+
+@cli.command("use")
+@click.option(
+    "--collection",
+    "-c",
+    required=True
+)
+def use(collection: str) -> None:
+    config = yaml.safe_load(open('config/config.yml'))
+    id_collection = config['collections'][int(collection)]
+    asyncio.run(start(id_collection))
 
 
 if __name__ == '__main__':
