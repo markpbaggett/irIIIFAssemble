@@ -73,8 +73,8 @@ def cli() -> None:
 
 @cli.command("random")
 def random_collection() -> None:
-    config = yaml.safe_load(open('config/config.yml'))
-    random_collection = random.choice(config['collections'])
+    finder = CollectionFinder()
+    random_collection = finder.get_random()
     asyncio.run(start(random_collection))
 
 
