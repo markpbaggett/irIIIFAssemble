@@ -5,6 +5,7 @@ from tqdm.asyncio import tqdm_asyncio
 import yaml
 import random
 import click
+from iriiifassemble import CollectionFinder
 
 logging.basicConfig(
     level=logging.INFO,
@@ -84,8 +85,8 @@ def random_collection() -> None:
     required=True
 )
 def use(collection: str) -> None:
-    config = yaml.safe_load(open('config/config.yml'))
-    id_collection = config['collections'][int(collection)]
+    finder = CollectionFinder()
+    id_collection = finder.get_by_id(int(collection))
     asyncio.run(start(id_collection))
 
 

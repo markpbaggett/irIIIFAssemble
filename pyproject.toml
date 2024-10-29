@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "iriiifassemble"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Mark Baggett <markpbaggett@gmail.com>"]
 readme = "README.md"
 include = [
-    { path = "config", format = ["sdist", "wheel"] }
+    { path = "iriiifassemble/config", format = ["sdist", "wheel"] }
 ]
 
 [tool.poetry.dependencies]
